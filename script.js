@@ -1,40 +1,30 @@
 mapboxgl.accessToken = "pk.eyJ1IjoibmV3dHJhbCIsImEiOiJjazJrcDY4Y2gxMmg3M2JvazU4OXV6NHZqIn0.VO5GkvBq_PSJHvX7T8H9jQ";
 
 const BASE_STYLE = "mapbox://styles/newtral/cmfcdokcl006f01sd20984lhq";
-
 const VECTOR_SOURCE_ID = "lineas-source";
 const VECTOR_TILESET_URL = "mapbox://newtral.5icp8e68";
 const VECTOR_SOURCE_LAYER = "limpieza";
 const LINE_LAYER_ID = "lineas-layer";
-
 const MIN_ZOOM = 4;
 const MAX_ZOOM = 18;
-
 const INITIAL_CENTER = [-3.7082319925015037, 40.386307640408894];
 const INITIAL_ZOOM = MIN_ZOOM;
-
 const LINE_WIDTH_BASE = 0.8;
 
-const LINE_COLORS = [
-  "#D624D0",
-  "#01f3b3",
-  "#305cfa",
-  "#eaea40",
-  "#cf023d"
-];
+const LINE_COLORS = ["#D624D0", "#01f3b3", "#305cfa", "#eaea40", "#cf023d"];
 
 const NIVEL_TEXTOS = {
   0: ["Sin nivel de limpieza asignado."],
   1: [
     "Barrido manual de las calles cinco veces a la semana (tres veces de lunes a viernes y otras dos durante el sábado y el domingo)",
     "Barrido de mantenimiento diario.",
-    "Baldeo (limpieza con agua) mixto cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
+    "Baldeo mixto cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
     "Planificación del servicio de barrido manual y baldeo mixto para que diariamente se realice alguno de los dos."
   ],
   2: [
     "Barrido manual de calzadas y aceras tres veces a la semana (en los días que no se realice el baldeo mixto).",
     "Baldeo mixto tres veces, no consecutivas, de lunes a domingo.",
-    "Barrido de mantenimiento: a diario o tres veces a la semana de manera no consecutiva."
+    "Barrido de mantenimiento: a diario en las calles incluidas en los lotes 1 y 2 y tres veces a la semana de manera no consecutiva en el resto de lotes."
   ],
   3: [
     "Un barrido manual en días alternos, de lunes a domingo.",
@@ -72,6 +62,7 @@ map.on("styledata", () => {
 
 let boundsLocked = true;
 let BOUNDS_LOCK_ZOOM = null;
+let selectedLevel = null;
 
 map.on("load", () => {
   const cam = map.cameraForBounds(MADRID_BOUNDS, { padding: 0 });
@@ -79,6 +70,7 @@ map.on("load", () => {
   BOUNDS_LOCK_ZOOM += 0.05;
   ensureSourceAndLayer();
   buildLegend();
+  applyLevelFilter();
 });
 
 map.on("zoom", () => {
@@ -108,12 +100,10 @@ map.addControl(geocoder, "top-right");
 geocoder.on("result", (e) => {
   const r = e.result;
   if (r && Array.isArray(r.bbox) && r.bbox.length === 4) {
-    map.fitBounds(
-      [[r.bbox[0], r.bbox[1]], [r.bbox[2], r.bbox[3]]],
-      { padding: 40, duration: 800, maxZoom: MAX_ZOOM }
-    );
+    const bounds = [[r.bbox[0], r.bbox[1]], [r.bbox[2], r.bbox[3]]];
+    map.fitBounds(bounds, { padding: 28, duration: 800, maxZoom: Math.min(17, MAX_ZOOM) });
   } else if (r && Array.isArray(r.center)) {
-    const target = Math.max(MIN_ZOOM + 1, Math.min(14, MAX_ZOOM));
+    const target = Math.min(17, MAX_ZOOM);
     map.flyTo({ center: r.center, zoom: target, duration: 800 });
   }
 });
@@ -122,7 +112,6 @@ function ensureSourceAndLayer() {
   if (!map.getSource(VECTOR_SOURCE_ID)) {
     map.addSource(VECTOR_SOURCE_ID, { type: "vector", url: VECTOR_TILESET_URL });
   }
-
   if (!map.getLayer(LINE_LAYER_ID)) {
     map.addLayer({
       id: LINE_LAYER_ID,
@@ -159,13 +148,14 @@ function buildLegend() {
   if (!legend) return;
   legend.innerHTML = "";
   const title = document.createElement("h3");
-  title.textContent = "Nivel de limpieza";
+  title.innerHTML = "Nivel de limpieza<br>(haz click para aislar las calles)";
   legend.appendChild(title);
   const legendOrder = [1, 2, 3, 4, 0];
   const labels = ["1", "2", "3", "4", "0"];
   legendOrder.forEach((i, idx) => {
     const row = document.createElement("div");
     row.className = "row";
+    row.dataset.level = String(i);
     const swatch = document.createElement("div");
     swatch.className = "swatch";
     swatch.style.background = LINE_COLORS[i];
@@ -174,8 +164,37 @@ function buildLegend() {
     text.textContent = labels[idx];
     row.appendChild(swatch);
     row.appendChild(text);
+    row.addEventListener("click", () => {
+      const level = Number(row.dataset.level);
+      selectedLevel = selectedLevel === level ? null : level;
+      updateLegendActiveState();
+      applyLevelFilter();
+    });
     legend.appendChild(row);
   });
+  updateLegendActiveState();
+}
+
+function updateLegendActiveState() {
+  const legend = document.getElementById("legend");
+  if (!legend) return;
+  const rows = legend.querySelectorAll(".row");
+  rows.forEach((row) => {
+    const lvl = Number(row.dataset.level);
+    if (selectedLevel === null) row.classList.remove("active");
+    else if (lvl === selectedLevel) row.classList.add("active");
+    else row.classList.remove("active");
+  });
+}
+
+function applyLevelFilter() {
+  const layer = map.getLayer(LINE_LAYER_ID);
+  if (!layer) return;
+  if (selectedLevel === null) {
+    map.setFilter(LINE_LAYER_ID, null);
+  } else {
+    map.setFilter(LINE_LAYER_ID, ["==", ["to-number", ["get", "NIVEL_LIMP"]], selectedLevel]);
+  }
 }
 
 const hoverPopup = new mapboxgl.Popup({
@@ -218,4 +237,3 @@ map.on("mouseleave", LINE_LAYER_ID, () => {
   map.getCanvas().style.cursor = "";
   hoverPopup.remove();
 });
-
