@@ -4,14 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mapa de limpieza de las calles de Madrid</title>
+
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.js"></script>
+
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css" />
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+
   <style>
     html, body { height: 100%; margin: 0; }
     #map { position: absolute; inset: 0; }
-    .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder { min-width: 320px; max-width: 480px; }
+
+    .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder {
+      min-width: 320px;
+      max-width: 480px;
+    }
+
     .legend {
       position: absolute;
       top: 12px;
@@ -32,6 +40,7 @@
     .legend .row.active { outline: 2px solid rgba(0,0,0,0.12); background: rgba(0,0,0,0.04); }
     .legend .swatch { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); }
     .legend .label { font-size: 12px; }
+
     .mapboxgl-popup.clean-popup .mapboxgl-popup-content {
       padding: 10px 12px;
       border-radius: 12px;
@@ -45,12 +54,27 @@
     .popup-list .item { margin: 4px 0; color: #555; }
     .popup-bullet { margin-right: 6px; font-weight: 700; }
     .popup-meta .nivel { padding: 0 2px; border-radius: 3px; font-size: 16px; color: black; background-color: #aaaaaa; }
+
     @media (max-width: 480px) {
-      .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder { min-width: 180px; max-width: 220px; font-size: 11px; }
-      .legend { top: 8px; left: 8px; padding: 6px 8px; border-radius: 8px; font-size: 10px; text-align: center; }
-      .legend h3 { font-size: 11px; text-align: center; }
-      .legend .swatch { width: 12px; height: 12px; }
-      .legend .label { font-size: 10px; }
+      .mapboxgl-ctrl-top-right { top: 8px; right: 8px; }
+      .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder {
+        min-width: 160px;
+        max-width: 200px;
+        font-size: 10px;
+        transform: scale(0.9);
+        transform-origin: top right;
+      }
+      .legend {
+        top: 8px;
+        left: 8px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+      }
+      .legend h3 { font-size: 10px; }
+      .legend .swatch { width: 10px; height: 10px; }
+      .legend .label { font-size: 9px; }
+      .legend .row { gap: 4px; padding: 2px 4px; }
     }
   </style>
 </head>
