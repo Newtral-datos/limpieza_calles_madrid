@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mapa de limpieza de las calles de Madrid</title>
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.js"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+    type="text/css"
+  />
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { position: absolute; inset: 0; }
+
+    .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder {
+      min-width: 320px;
+      max-width: 480px;
+    }
+
+    .legend {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(120%) blur(4px);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      font: 12px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #222;
+      text-align: center;
+    }
+    .legend h3 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .legend .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 4px 0;
+      white-space: nowrap;
+    }
+    .legend .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+    }
+    .legend .label { font-size: 12px; }
+
+    .mapboxgl-popup.clean-popup .mapboxgl-popup-content {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      font: 12px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .popup-title { margin: 0 0 6px 0; font-weight: 700; font-size: 16px; }
+    .popup-meta { margin: 0 0 6px 0; color: black; font-size: 14px; }
+    .popup-list { margin: 6px 0 0 0; }
+    .popup-list .item { margin: 4px 0; color: #555; }
+    .popup-bullet { margin-right: 6px; font-weight: 700; }
+    .popup-meta .nivel {
+      padding: 0 2px;
+      border-radius: 3px;
+      font-size: 16px;
+      color: black;
+      background-color: #aaaaaa;
+    }
+
+    @media (max-width: 480px) {
+      .mapboxgl-ctrl-top-right .mapboxgl-ctrl-geocoder {
+        min-width: 180px;
+        max-width: 220px;
+        font-size: 11px;
+      }
+      .legend {
+        top: 8px;
+        left: 8px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        text-align: center;
+      }
+      .legend h3 { font-size: 11px; text-align: center; }
+      .legend .swatch { width: 12px; height: 12px; }
+      .legend .label { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="legend" class="legend"></div>
+  <script src="./script.js"></script>
+</body>
+</html>
