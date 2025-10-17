@@ -18,7 +18,7 @@ const NIVEL_TEXTOS = {
   1: [
     "Barrido manual de las calles cinco veces a la semana (tres veces de lunes a viernes y otras dos durante el sábado y el domingo)",
     "Barrido de mantenimiento diario.",
-    "Baldeo (limpieza con agua) mixto cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
+    "Baldeo mixto (limpieza con agua) cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
     "Planificación del servicio de barrido manual y baldeo mixto para que diariamente se realice alguno de los dos."
   ],
   2: [
