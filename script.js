@@ -18,7 +18,7 @@ const NIVEL_TEXTOS = {
   1: [
     "Barrido manual de las calles cinco veces a la semana (tres veces de lunes a viernes y otras dos durante el sábado y el domingo)",
     "Barrido de mantenimiento diario.",
-    "Baldeo mixto cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
+    "Baldeo (limpieza con agua) mixto cinco veces a la semana (tres baldeos de lunes a viernes y dos durante el fin de semana).",
     "Planificación del servicio de barrido manual y baldeo mixto para que diariamente se realice alguno de los dos."
   ],
   2: [
@@ -101,9 +101,9 @@ geocoder.on("result", (e) => {
   const r = e.result;
   if (r && Array.isArray(r.bbox) && r.bbox.length === 4) {
     const bounds = [[r.bbox[0], r.bbox[1]], [r.bbox[2], r.bbox[3]]];
-    map.fitBounds(bounds, { padding: 28, duration: 800, maxZoom: Math.min(17, MAX_ZOOM) });
+    map.fitBounds(bounds, { padding: 28, duration: 800, maxZoom: Math.min(17.5, MAX_ZOOM) });
   } else if (r && Array.isArray(r.center)) {
-    const target = Math.min(17, MAX_ZOOM);
+    const target = Math.min(17.5, MAX_ZOOM);
     map.flyTo({ center: r.center, zoom: target, duration: 800 });
   }
 });
@@ -188,8 +188,7 @@ function updateLegendActiveState() {
 }
 
 function applyLevelFilter() {
-  const layer = map.getLayer(LINE_LAYER_ID);
-  if (!layer) return;
+  if (!map.getLayer(LINE_LAYER_ID)) return;
   if (selectedLevel === null) {
     map.setFilter(LINE_LAYER_ID, null);
   } else {
