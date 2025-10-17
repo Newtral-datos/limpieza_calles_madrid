@@ -24,7 +24,7 @@ const NIVEL_TEXTOS = {
   2: [
     "Barrido manual de calzadas y aceras tres veces a la semana (en los días que no se realice el baldeo mixto).",
     "Baldeo mixto tres veces, no consecutivas, de lunes a domingo.",
-    "Barrido de mantenimiento: a diario en las calles incluidas en los lotes 1 y 2 y tres veces a la semana de manera no consecutiva en el resto de lotes."
+    "Barrido de mantenimiento: a diario en las calles de los distritos de Centro, Chamberí, Tetuán, Arganzuela, Retiro, Salamanca y Chamartín, y tres veces a la semana de manera no consecutiva en el resto de distritos."
   ],
   3: [
     "Un barrido manual en días alternos, de lunes a domingo.",
@@ -236,3 +236,4 @@ map.on("mouseleave", LINE_LAYER_ID, () => {
   map.getCanvas().style.cursor = "";
   hoverPopup.remove();
 });
+
